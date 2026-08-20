@@ -98,15 +98,37 @@ export default function Home() {
             Premium financing involves risk, including the risk that policy performance may be insufficient to service
             the loan. Consult your own advisors before entering any insurance or financing arrangement.
           </p>
-          <p className="footer-contact">
-            <span className="footer-site">www.goldedgeventures.com</span>
-            <span className="footer-divider">&middot;</span>
-            <a href="tel:3477822508" className="footer-phone-link">
-              <span className="phone-icon">&#9742;</span> 347-782-2508
+
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '10px',
+            margin: '24px 0'
+          }}>
+            <a
+              href="https://www.goldedgeventures.com"
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'inherit', textDecoration: 'none' }}
+            >
+              <span style={{ fontSize: '16px' }}>&#127760;</span>
+              <span>www.goldedgeventures.com</span>
             </a>
-            <span className="footer-divider">&middot;</span>
-            <a href="mailto:hershy@goldedgeventures.com">hershy@goldedgeventures.com</a>
-          </p>
+            <a
+              href="tel:3477822508"
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'inherit', textDecoration: 'none' }}
+            >
+              <span style={{ fontSize: '16px' }}>&#9742;</span>
+              <span>347-782-2508</span>
+            </a>
+            <a
+              href="mailto:hershy@goldedgeventures.com"
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'inherit', textDecoration: 'none' }}
+            >
+              <span style={{ fontSize: '16px' }}>&#9993;</span>
+              <span>hershy@goldedgeventures.com</span>
+            </a>
+          </div>
+
           <p className="footer-bottom">&copy; 2026 Gold Edge Ventures. All rights reserved.</p>
         </div>
       </footer>
