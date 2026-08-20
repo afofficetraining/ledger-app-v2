@@ -5,13 +5,14 @@ export default function Home() {
     <div>
       <header className="site-header">
         <div className="site-header-inner">
-          <div className="brand-mark">Ledger Advisory</div>
+          <div className="brand-mark">Gold Edge Venture</div>
           <nav className="site-nav">
             <a href="#services">Services</a>
             <a href="#process">How It Works</a>
             <a href="#qualify">Who Qualifies</a>
           </nav>
           <div className="header-actions">
+            <a href="tel:3477822508" className="header-phone">347-782-2508</a>
             <Link href="/client/login"><button className="btn-outline">Client Login</button></Link>
             <Link href="/agent/login"><button className="btn-solid">Agent Login</button></Link>
           </div>
@@ -28,7 +29,7 @@ export default function Home() {
             liquidity you need elsewhere.
           </p>
           <div className="hero-actions">
-            <a href="mailto:info@example.com" className="btn-solid large">Speak With Our Insurance Specialists</a>
+            <a href="mailto:hershymayer1@gmail.com" className="btn-solid large">Speak With Our Insurance Specialists</a>
           </div>
         </div>
       </section>
@@ -85,7 +86,7 @@ export default function Home() {
           <h2>Let&rsquo;s discuss your coverage strategy</h2>
           <p>Reach out to begin, or if you&rsquo;re already a client, sign in to your secure portal below.</p>
           <div className="hero-actions">
-            <a href="mailto:info@example.com" className="btn-solid large">Contact Our Insurance Specialists</a>
+            <a href="mailto:hershymayer1@gmail.com" className="btn-solid large">Contact Our Insurance Specialists</a>
             <Link href="/client/login"><button className="btn-outline large">Client Login</button></Link>
           </div>
         </div>
@@ -98,7 +99,10 @@ export default function Home() {
             Premium financing involves risk, including the risk that policy performance may be insufficient to service
             the loan. Consult your own advisors before entering any insurance or financing arrangement.
           </p>
-          <p className="footer-bottom">&copy; 2026 Ledger Advisory. All rights reserved.</p>
+          <p className="footer-bottom">
+            347-782-2508 &middot; hershymayer1@gmail.com
+          </p>
+          <p className="footer-bottom">&copy; 2026 Gold Edge Venture. All rights reserved.</p>
         </div>
       </footer>
     </div>
