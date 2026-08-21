@@ -11,7 +11,7 @@ export default function ClientLogin() {
     setError('');
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/client/client_portal` : undefined },
+      options: { emailRedirectTo: 'https://www.goldedgeventures.com/client/client_portal' },
     });
     if (error) {
       setError(error.message);
