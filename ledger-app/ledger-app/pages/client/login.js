@@ -11,7 +11,7 @@ export default function ClientLogin() {
     setError('');
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/client/portal` : undefined },
+      options: { emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/client/client_portal` : undefined },
     });
     if (error) {
       setError(error.message);
@@ -38,4 +38,4 @@ export default function ClientLogin() {
       )}
     </div>
   );
-}
+      }
