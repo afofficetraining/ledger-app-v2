@@ -72,7 +72,7 @@ export default function Home() {
           <div className="section-eyebrow">Eligibility</div>
           <h2>Who this is designed for</h2>
           <ul className="qualify-list">
-            <li>Net worth of $5M or greater</li>
+            <li>Net worth of $15M or greater</li>
             <li>A need for significant life insurance coverage</li>
             <li>A desire to preserve liquidity and capital efficiency</li>
             <li>Estate, business, or succession planning objectives</li>
