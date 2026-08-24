@@ -227,6 +227,15 @@ export default function ClientPortal() {
     }, 'image/png');
   }
 
+  async function viewTemplate(doc) {
+    const { data, error } = await supabase.storage.from('documents').createSignedUrl(doc.template_path, 3600);
+    if (error || !data) {
+      alert('Could not open the form: ' + (error?.message || 'unknown error'));
+      return;
+    }
+    window.open(data.signedUrl, '_blank');
+  }
+
   async function logout() {
     await supabase.auth.signOut();
     router.push('/client/login');
@@ -257,6 +266,11 @@ export default function ClientPortal() {
             <div className="doc-name">
               <div className="title">{doc.name}</div>
               <div className="desc">{doc.description}</div>
+              {doc.template_path && (
+                <div style={{ marginTop: 6 }}>
+                  <span className="view-form-link" onClick={() => viewTemplate(doc)}>View the blank form (PDF)</span>
+                </div>
+              )}
             </div>
             {doc.status === 'received' ? (
               <span style={{ fontSize: 11.5, color: 'var(--received)', fontWeight: 600 }}>Received</span>

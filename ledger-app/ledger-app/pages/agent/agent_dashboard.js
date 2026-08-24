@@ -16,6 +16,9 @@ export default function AgentDashboard() {
   const [downloading, setDownloading] = useState(false);
   const [nw, setNw] = useState({ stated: '', realEstate: '', liquidity: '' });
   const [pulling, setPulling] = useState(false);
+  const [uploadingTemplateId, setUploadingTemplateId] = useState(null);
+  const [newDoc, setNewDoc] = useState({ name: '', description: '', requiresSignature: false, isRestricted: false });
+  const [savingDoc, setSavingDoc] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -109,6 +112,75 @@ export default function AgentDashboard() {
     }
   }
 
+  async function uploadTemplate(docTypeId, file) {
+    setUploadingTemplateId(docTypeId);
+    try {
+      const path = `templates/${docTypeId}-${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('documents').upload(path, file, { upsert: true });
+      if (uploadError) {
+        alert('Upload failed: ' + uploadError.message);
+        return;
+      }
+      const { error: updateError } = await supabase.from('document_types')
+        .update({ template_path: path, template_filename: file.name })
+        .eq('id', docTypeId);
+      if (updateError) {
+        alert('Could not save the form: ' + updateError.message);
+        return;
+      }
+      await loadDocTypes();
+    } finally {
+      setUploadingTemplateId(null);
+    }
+  }
+
+  function handleTemplateInput(e, docTypeId) {
+    const file = e.target.files[0];
+    if (file) uploadTemplate(docTypeId, file);
+    e.target.value = '';
+  }
+
+  async function viewTemplate(doc) {
+    const { data, error } = await supabase.storage.from('documents').createSignedUrl(doc.template_path, 3600);
+    if (error || !data) {
+      alert('Could not open the form: ' + (error?.message || 'unknown error'));
+      return;
+    }
+    window.open(data.signedUrl, '_blank');
+  }
+
+  async function addDocType(e) {
+    e.preventDefault();
+    if (!newDoc.name.trim()) return;
+    setSavingDoc(true);
+    const sortOrder = docTypes.length > 0 ? Math.max(...docTypes.map(d => d.sort_order || 0)) + 10 : 10;
+    const { error } = await supabase.from('document_types').insert({
+      name: newDoc.name.trim(),
+      description: newDoc.description.trim(),
+      requires_signature: newDoc.requiresSignature,
+      is_restricted: newDoc.isRestricted,
+      sort_order: sortOrder,
+    });
+    setSavingDoc(false);
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    setNewDoc({ name: '', description: '', requiresSignature: false, isRestricted: false });
+    await loadDocTypes();
+  }
+
+  async function removeDocType(docTypeId, name) {
+    if (!confirm(`Remove "${name}" from the document checklist for all clients?`)) return;
+    const { error } = await supabase.from('document_types').delete().eq('id', docTypeId);
+    if (error) {
+      alert('Could not remove: ' + error.message);
+      return;
+    }
+    await loadDocTypes();
+    if (activeClientId) loadClientDocs(activeClientId);
+  }
+
   async function logout() { await supabase.auth.signOut(); router.push('/agent/login'); }
 
   async function saveNw() {
@@ -198,20 +270,32 @@ export default function AgentDashboard() {
           <>
             <div className="ledger">
               {merged.map(doc => (
-                <div className="ledger-row" key={doc.id}>
+                <div className="ledger-row" key={doc.id} style={{ flexWrap: 'wrap' }}>
                   <div className={`stamp ${doc.status === 'received' ? 'received' : 'missing'}`}>{doc.status === 'received' ? '\u2713' : '!'}</div>
                   <div className="doc-name">
                     <div className="title">{doc.name}{doc.is_restricted && <span className="badge-restricted">Restricted</span>}</div>
                     <div className="desc">{doc.description}</div>
+                    <div style={{ marginTop: 6, display: 'flex', gap: 12, alignItems: 'center' }}>
+                      {doc.template_path && (
+                        <span className="view-form-link" onClick={() => viewTemplate(doc)}>View blank form</span>
+                      )}
+                      <label style={{ fontSize: 11, color: 'var(--ink-soft)', cursor: 'pointer', textDecoration: 'underline' }}>
+                        {uploadingTemplateId === doc.id ? 'Uploading…' : doc.template_path ? 'Replace form' : 'Attach blank PDF form'}
+                        <input type="file" accept="application/pdf" style={{ display: 'none' }} onChange={e => handleTemplateInput(e, doc.id)} disabled={uploadingTemplateId === doc.id} />
+                      </label>
+                    </div>
                   </div>
-                  {doc.status === 'received' ? (
-                    <button className="action-btn" onClick={() => toggleDoc(doc.clientDocId, doc.status)}>Mark outstanding</button>
-                  ) : (
-                    <>
-                      <button className="action-btn" onClick={() => toggleDoc(doc.clientDocId, doc.status)} style={{ marginRight: 6 }}>Mark received</button>
-                      <button className="action-btn primary" onClick={() => requestDoc(doc.clientDocId, doc.name)}>Request</button>
-                    </>
-                  )}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {doc.status === 'received' ? (
+                      <button className="action-btn" onClick={() => toggleDoc(doc.clientDocId, doc.status)}>Mark outstanding</button>
+                    ) : (
+                      <>
+                        <button className="action-btn" onClick={() => toggleDoc(doc.clientDocId, doc.status)}>Mark received</button>
+                        <button className="action-btn primary" onClick={() => requestDoc(doc.clientDocId, doc.name)}>Request</button>
+                      </>
+                    )}
+                    <button className="action-btn small" title="Remove from checklist" onClick={() => removeDocType(doc.id, doc.name)}>&times;</button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -239,6 +323,28 @@ export default function AgentDashboard() {
               </div>
               <button className="action-btn" onClick={saveNw}>Save figures</button>
               {check && <div className={`networth-result ${check.match ? 'match' : 'mismatch'}`}>{check.match ? '\u2713 ' : '\u26a0 '}{check.msg}</div>}
+            </div>
+
+            <div className="checklist-panel">
+              <h3>Manage document checklist</h3>
+              <div className="subtext">Add a document every client needs to provide (e.g. PFS, Real Estate Schedule, K-1s, tax returns, bank statements). Once added, attach the blank PDF form above so clients can view and download it before uploading.</div>
+              <form className="checklist-form" onSubmit={addDocType}>
+                <div className="field">
+                  <label>Document name</label>
+                  <input value={newDoc.name} onChange={e => setNewDoc({ ...newDoc, name: e.target.value })} placeholder="e.g. PFS - Personal Financial Statement" />
+                </div>
+                <div className="field">
+                  <label>Description</label>
+                  <input value={newDoc.description} onChange={e => setNewDoc({ ...newDoc, description: e.target.value })} placeholder="Shown to the client under the document name" />
+                </div>
+                <div className="field span-2 checklist-checks">
+                  <label><input type="checkbox" checked={newDoc.requiresSignature} onChange={e => setNewDoc({ ...newDoc, requiresSignature: e.target.checked })} /> Requires client signature</label>
+                  <label><input type="checkbox" checked={newDoc.isRestricted} onChange={e => setNewDoc({ ...newDoc, isRestricted: e.target.checked })} /> Restricted (contains SSN)</label>
+                  <button className="action-btn primary" type="submit" disabled={savingDoc || !newDoc.name.trim()} style={{ marginLeft: 'auto' }}>
+                    {savingDoc ? 'Adding…' : '+ Add to checklist'}
+                  </button>
+                </div>
+              </form>
             </div>
 
             <div className="notif-feed">
