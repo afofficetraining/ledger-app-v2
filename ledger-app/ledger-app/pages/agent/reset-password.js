@@ -59,7 +59,7 @@ export default function ResetPassword() {
   return (
     <div className="auth-screen">
       <div className="auth-panel">
-        <BrandMark />
+        <BrandMark height={170} />
         <div className="auth-quote">
           <h2>Set a new password</h2>
           <p>Choose a new password for your agent account to get back into your case file dashboard.</p>
