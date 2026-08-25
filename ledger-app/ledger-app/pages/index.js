@@ -1,11 +1,12 @@
 import Link from 'next/link';
+import BrandMark from '../components/BrandMark';
 
 export default function Home() {
   return (
     <div>
       <header className="site-header">
         <div className="site-header-inner">
-          <div className="brand-mark">Gold Edge Ventures</div>
+          <BrandMark />
           <nav className="site-nav">
             <a href="#services">Services</a>
             <a href="#process">How It Works</a>

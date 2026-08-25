@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from '../../lib/supabaseClient';
+import BrandMark from '../../components/BrandMark';
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -58,7 +59,7 @@ export default function ResetPassword() {
   return (
     <div className="auth-screen">
       <div className="auth-panel">
-        <div className="brand-mark">Gold Edge Ventures</div>
+        <BrandMark />
         <div className="auth-quote">
           <h2>Set a new password</h2>
           <p>Choose a new password for your agent account to get back into your case file dashboard.</p>

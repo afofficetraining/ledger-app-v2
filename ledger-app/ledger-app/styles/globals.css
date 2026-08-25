@@ -150,7 +150,8 @@ input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--gold
 /* ---------- Public homepage ---------- */
 .site-header{ background:var(--navy); color:var(--paper); border-bottom:1px solid rgba(255,255,255,.08); position:sticky; top:0; z-index:20; }
 .site-header-inner{ max-width:1120px; margin:0 auto; padding:18px 32px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; }
-.brand-mark{ font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:var(--gold-bright); }
+.brand-mark{ display:inline-flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:var(--gold-bright); }
+.brand-mark img{ display:block; flex-shrink:0; }
 .site-nav{ display:flex; gap:26px; flex-wrap:wrap; }
 .site-nav a{ color:#C7CEDA; text-decoration:none; font-size:13.5px; transition: color .15s; }
 .site-nav a:hover{ color:var(--gold-bright); }
