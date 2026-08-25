@@ -6,7 +6,7 @@ export default function Home() {
     <div>
       <header className="site-header">
         <div className="site-header-inner">
-          <BrandMark />
+          <BrandMark height={118} />
           <nav className="site-nav">
             <a href="#services">Services</a>
             <a href="#process">How It Works</a>

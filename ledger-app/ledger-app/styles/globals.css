@@ -45,7 +45,7 @@ input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--gold
   background-image: radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
   background-size: 22px 22px; opacity:.5; pointer-events:none;
 }
-.auth-panel .brand-mark{ color:var(--gold-bright); font-size:22px; position:relative; }
+.auth-panel .brand-mark{ position:relative; }
 .auth-panel .auth-quote{ max-width:420px; position:relative; }
 .auth-panel .auth-quote h2{ font-size:30px; line-height:1.25; color:#fff; margin:0 0 14px; }
 .auth-panel .auth-quote p{ color:#C7CEDA; font-size:14px; line-height:1.6; }
@@ -149,9 +149,8 @@ input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--gold
 
 /* ---------- Public homepage ---------- */
 .site-header{ background:var(--navy); color:var(--paper); border-bottom:1px solid rgba(255,255,255,.08); position:sticky; top:0; z-index:20; }
-.site-header-inner{ max-width:1120px; margin:0 auto; padding:18px 32px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; }
-.brand-mark{ display:inline-flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:var(--gold-bright); }
-.brand-mark img{ display:block; flex-shrink:0; }
+.site-header-inner{ max-width:1120px; margin:0 auto; padding:12px 32px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; }
+.brand-mark{ flex-shrink:0; }
 .site-nav{ display:flex; gap:26px; flex-wrap:wrap; }
 .site-nav a{ color:#C7CEDA; text-decoration:none; font-size:13.5px; transition: color .15s; }
 .site-nav a:hover{ color:var(--gold-bright); }

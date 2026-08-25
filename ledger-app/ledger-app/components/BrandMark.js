@@ -1,8 +1,5 @@
-export default function BrandMark({ size = 28 }) {
+export default function BrandMark({ height = 96 }) {
   return (
-    <span className="brand-mark">
-      <img src="/logo-icon.png" alt="Gold Edge Ventures" height={size} style={{ height: size, width: 'auto' }} />
-      Gold Edge Ventures
-    </span>
+    <img className="brand-mark" src="/logo-full.png" alt="Gold Edge Ventures" style={{ height, width: 'auto', display: 'block' }} />
   );
 }

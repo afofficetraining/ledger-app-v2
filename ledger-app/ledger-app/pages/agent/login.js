@@ -44,7 +44,7 @@ export default function AgentLogin() {
   return (
     <div className="auth-screen">
       <div className="auth-panel">
-        <BrandMark />
+        <BrandMark height={170} />
         <div className="auth-quote">
           <h2>Every case file, organized and audit-ready.</h2>
           <p>Track documentation, run net worth cross-checks, and move each file to the carrier and financing lender the moment it&rsquo;s complete.</p>
