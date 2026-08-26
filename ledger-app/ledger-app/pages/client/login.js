@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '../../lib/supabaseClient';
-import BrandMark from '../../components/BrandMark';
 
 export default function ClientLogin() {
   const [email, setEmail] = useState('');
@@ -28,7 +27,6 @@ export default function ClientLogin() {
   return (
     <div className="auth-screen">
       <div className="auth-panel">
-        <BrandMark height={66} />
         <div className="auth-quote">
           <h2>Your case file, in one secure place.</h2>
           <p>Upload documents, e-sign what&rsquo;s required, and track exactly what&rsquo;s still needed &mdash; no paperwork to print or mail.</p>
