@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { supabase } from '../../lib/supabaseClient';
-import BrandMark from '../../components/BrandMark';
 
 export default function AgentLogin() {
   const [email, setEmail] = useState('');
@@ -44,7 +43,6 @@ export default function AgentLogin() {
   return (
     <div className="auth-screen">
       <div className="auth-panel">
-        <BrandMark height={66} />
         <div className="auth-quote">
           <h2>Every case file, organized and audit-ready.</h2>
           <p>Track documentation, run net worth cross-checks, and move each file to the carrier and financing lender the moment it&rsquo;s complete.</p>
