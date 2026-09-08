@@ -146,7 +146,7 @@ export default function AgentDashboard() {
       alert('Could not open the form: ' + (error?.message || 'unknown error'));
       return;
     }
-    window.open(data.signedUrl, '_blank');
+    window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
   }
 
   async function addDocType(e) {

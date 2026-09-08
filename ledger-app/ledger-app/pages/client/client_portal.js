@@ -121,15 +121,25 @@ export default function ClientPortal() {
     setSigningDoc(null);
   }
 
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   function downloadForWetSignature() {
     const w = window.open('', '_blank');
-    const ssnLine = needsSsn(signingDoc) ? `<p><b>SSN:</b> ${ssn || '_______________'}</p>` : '';
+    if (!w) return;
+    const ssnLine = needsSsn(signingDoc) ? `<p><b>SSN:</b> ${escapeHtml(ssn) || '_______________'}</p>` : '';
     const intakeLines = isIntakeForm(signingDoc)
-      ? INTAKE_FIELDS.map(f => `<p><b>${f.label}:</b> ${intake[f.key] || '_______________'}</p>`).join('')
+      ? INTAKE_FIELDS.map(f => `<p><b>${escapeHtml(f.label)}:</b> ${escapeHtml(intake[f.key]) || '_______________'}</p>`).join('')
       : '';
     const w2 = w;
     w2.document.write(`
-      <html><head><title>${signingDoc.name}</title>
+      <html><head><title>${escapeHtml(signingDoc.name)}</title>
       <style>
         body{ font-family: Georgia, serif; max-width: 650px; margin: 60px auto; color: #1B1B18; line-height: 1.6; }
         h1{ font-size: 22px; border-bottom: 2px solid #A9822F; padding-bottom: 10px; }
@@ -138,12 +148,12 @@ export default function ClientPortal() {
         p{ font-size: 13.5px; margin: 6px 0; }
       </style>
       </head><body>
-        <h1>${signingDoc.name}</h1>
-        <p>${signingDoc.description}</p>
-        <p>I, <b>${printName || '_______________'}</b>, certify that I have read and agree to this document.</p>
+        <h1>${escapeHtml(signingDoc.name)}</h1>
+        <p>${escapeHtml(signingDoc.description)}</p>
+        <p>I, <b>${escapeHtml(printName) || '_______________'}</b>, certify that I have read and agree to this document.</p>
         ${ssnLine}
         ${intakeLines}
-        <p><b>Date:</b> ${signDate}</p>
+        <p><b>Date:</b> ${escapeHtml(signDate)}</p>
         <div class="field-line"></div>
         <div class="label">Signature (sign by hand above)</div>
         <script>window.print();</script>
@@ -233,7 +243,7 @@ export default function ClientPortal() {
       alert('Could not open the form: ' + (error?.message || 'unknown error'));
       return;
     }
-    window.open(data.signedUrl, '_blank');
+    window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
   }
 
   async function logout() {
