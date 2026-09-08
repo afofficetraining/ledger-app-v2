@@ -112,10 +112,14 @@ export default function AgentDashboard() {
     }
   }
 
+  function sanitizeFilename(name) {
+    return String(name).replace(/[^a-zA-Z0-9._ -]/g, '_').slice(-150);
+  }
+
   async function uploadTemplate(docTypeId, file) {
     setUploadingTemplateId(docTypeId);
     try {
-      const path = `templates/${docTypeId}-${file.name}`;
+      const path = `templates/${docTypeId}-${sanitizeFilename(file.name)}`;
       const { error: uploadError } = await supabase.storage.from('documents').upload(path, file, { upsert: true });
       if (uploadError) {
         alert('Upload failed: ' + uploadError.message);
