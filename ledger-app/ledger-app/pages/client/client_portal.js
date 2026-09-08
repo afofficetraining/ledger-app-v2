@@ -71,9 +71,19 @@ export default function ClientPortal() {
     setClientDocs(docs || []);
   }
 
+  const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
+
+  function sanitizeFilename(name) {
+    return String(name).replace(/[^a-zA-Z0-9._ -]/g, '_').slice(-150);
+  }
+
   async function uploadFile(file, docTypeId, clientDocId) {
+    if (file.size > MAX_UPLOAD_BYTES) {
+      alert('That file is too large. Please upload a file under 25MB.');
+      return;
+    }
     setUploadingId(docTypeId);
-    const path = `${client.id}/${docTypeId}-${file.name}`;
+    const path = `${client.id}/${docTypeId}-${sanitizeFilename(file.name)}`;
     const { error: uploadError } = await supabase.storage.from('documents').upload(path, file, { upsert: true });
     if (uploadError) {
       alert('Upload failed: ' + uploadError.message);
@@ -289,7 +299,7 @@ export default function ClientPortal() {
                 <button className="action-btn primary" onClick={() => openSignModal(doc)}>Fill out & sign</button>
                 <label style={{ fontSize: 10.5, color: 'var(--ink-soft)', cursor: 'pointer' }}>
                   or upload a signed copy
-                  <input type="file" style={{ display: 'none' }} onChange={e => handleFileInput(e, doc.id, doc.clientDocId)} disabled={uploadingId === doc.id} />
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.doc,.docx" style={{ display: 'none' }} onChange={e => handleFileInput(e, doc.id, doc.clientDocId)} disabled={uploadingId === doc.id} />
                 </label>
               </div>
             ) : (
@@ -302,7 +312,7 @@ export default function ClientPortal() {
                 onClick={() => document.getElementById(`file-${doc.id}`).click()}
               >
                 {uploadingId === doc.id ? 'Uploading...' : 'Drag a file here, or click to choose one'}
-                <input id={`file-${doc.id}`} type="file" onChange={e => handleFileInput(e, doc.id, doc.clientDocId)} />
+                <input id={`file-${doc.id}`} type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.doc,.docx" onChange={e => handleFileInput(e, doc.id, doc.clientDocId)} />
               </div>
             )}
           </div>

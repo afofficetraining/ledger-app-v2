@@ -233,7 +233,27 @@ create policy "documents_bucket_delete_agent" on storage.objects
   using (bucket_id = 'documents' and is_agent());
 
 -- ============================================================
--- 4. Register your agent account(s) — REQUIRED, do this now.
+-- 4. Harden the "documents" storage bucket itself: cap file size
+--    and restrict to the file types this app's uploads actually
+--    use. Right now the bucket accepts anything of any size, which
+--    both wastes storage and widens what a malicious upload could
+--    contain. 25MB matches the client-side limit added in the app;
+--    the type list matches the accept="" list on the upload inputs.
+-- ============================================================
+update storage.buckets
+set file_size_limit = 26214400, -- 25MB, in bytes
+    allowed_mime_types = array[
+      'application/pdf',
+      'image/jpeg',
+      'image/png',
+      'image/heic',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ]
+where id = 'documents';
+
+-- ============================================================
+-- 5. Register your agent account(s) — REQUIRED, do this now.
 --    Without this, agents will be treated as ordinary clients and
 --    the agent dashboard will show no clients / fail to save.
 --    Replace the email below with each agent's actual login email,
@@ -242,3 +262,20 @@ create policy "documents_bucket_delete_agent" on storage.objects
 -- insert into agents (id, email)
 -- select id, email from auth.users where email = 'agent@example.com'
 -- on conflict (id) do nothing;
+
+-- ============================================================
+-- 6. A few more settings this script cannot reach — SQL can't
+--    touch these, they're dashboard toggles under Authentication:
+--
+--    - Authentication -> Providers -> Email -> "Secure email change"
+--      and "Confirm email" should both be on.
+--    - Authentication -> Settings -> "Minimum password length" —
+--      set to at least 10-12 for a financial-services app; the app
+--      currently only enforces 8 client-side, which is a courtesy
+--      check, not the real boundary.
+--    - Authentication -> Settings -> enable "Leaked password
+--      protection" if available on your plan.
+--    - Authentication -> Rate Limits — confirm sign-in and OTP
+--      send limits are set (Supabase defaults are reasonable, but
+--      worth a look for a client-facing magic-link flow like this).
+-- ============================================================
